@@ -1,7 +1,7 @@
-{% autoescape off %}
-Bienvenue sur febrox system authentification
-Bonjour {{ name }}
-confirmer votre address avec le lien suivant:
 
-lien: https//{{ domain }}{% url 'activate' uidb64=uid token=token %}
+{% autoescape off %}  
+    welcome to Djngo login 
+    Hello  {{ name }} !!
+    Please  confirm your email by clicking on the following link 
+    confirimation Link : http://{{ domain }} {% url 'activate' uidb64=uid token=token  %}
 {% endautoescape %}
