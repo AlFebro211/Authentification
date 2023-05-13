@@ -59,7 +59,6 @@ def logIn (request):
             return redirect ('login')
     return render(request,'registrer.html')
     
-
 def logOut(request):
     logout(request)
     ms.success(request,'vous avez ete connecté')
