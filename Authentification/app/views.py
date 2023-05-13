@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages as ms
 from django.contrib.auth import authenticate,login,logout
 from django.core.mail import send_mail,EmailMessage
-from tokens import generatorToken
+from app.tokens import generatorToken
 def home  (request):
    return render (request, 'index.html')
 
