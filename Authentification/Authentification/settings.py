@@ -12,7 +12,11 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
-from .info import*
+from .info import* 
+# pour confogurer force_text 
+import django
+from django.utils.encoding import force_str
+django.utils.encoding.force_text = force_str
 
 EMAIL_USE_TLS =EMAIL_USE_TLS 
 EMAIL_HOST = EMAIL_HOST
