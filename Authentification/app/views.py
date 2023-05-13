@@ -35,9 +35,9 @@ def registrer (request):
         mon_utilisateur.first_name = firstname
         mon_utilisateur.last_name = lastname 
         mon_utilisateur.save()
-        ms.success(request, 'votre compte a ete cree avec succes ')
-        subject = 'bienvenu sur Febrox django system login'
-        message = 'bienvenue'+mon_utilisateur.first_name + "  " + mon_utilisateur.last_name + "\n Nous sommes heureux de vous recevoir\n\n\n merci\n\n FEBROX PRO"
+        ms.success(request, "votre compte a ete cree avec succes" )
+        subject = "bienvenu sur Febrox django system login"
+        message = "bienvenue" + mon_utilisateur.first_name + "  " + mon_utilisateur.last_name + "\n Nous sommes heureux de vous recevoir\n\n\n merci\n\n FEBROX PRO"
         from_email = EMAIL_HOST_USER
         to_list = [mon_utilisateur.email]
         send_mail(subject,message,from_email, to_list,fail_silently=False)
@@ -57,7 +57,7 @@ def logIn (request):
         else:
             ms.error(request,'Mauvaise authentification ')
             return redirect ('login')
-    return render(request,'registrer.html')
+    return render(request,'register.html')
     
 def logOut(request):
     logout(request)
