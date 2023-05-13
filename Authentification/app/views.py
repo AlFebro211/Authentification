@@ -1,5 +1,5 @@
-from Authentification import settings
-from django.shortcuts import redirect, render
+from Authentification.Authentification import settings
+from django.shortcuts import redirect,render
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib import messages as ms
@@ -61,6 +61,6 @@ def logIn (request):
     
 def logOut(request):
     logout(request)
-    ms.success(request,'vous avez ete connecté')
+    ms.success(request,'vous avez ete deconnecté')
     return redirect('home')
         
