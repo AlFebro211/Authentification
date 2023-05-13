@@ -1,0 +1,8 @@
+{% autoescape   %}
+Bienvenue sur febrox system authentification
+Bonjour {{ name }}
+confirmer votre address avec le lien suivant :
+
+lien : https//{{ domain }}
+{% {% url 'activate' uidb64 = uid token = token %} %}
+{% endautoescape %}

@@ -1,6 +1,7 @@
 from django.utils.http import urlsafe_base64_decode,urlsafe_base64_encode
 from django.utils.encoding import force_bytes,force_text
 from django.template.loader import render_to_string
+from django.contrib.sites.shortcuts import get_current_site
 from Authentification.settings import EMAIL_HOST_USER
 from django.shortcuts import redirect,render
 from django.http import HttpResponse
@@ -8,7 +9,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages as ms
 from django.contrib.auth import authenticate,login,logout
 from django.core.mail import send_mail,EmailMessage
-
+from tokens import generatorToken
 def home  (request):
    return render (request, 'index.html')
 
@@ -42,8 +43,27 @@ def registrer (request):
         #from_email = EMAIL_HOST_USER
         #to_list = [mon_utilisateur.email]
         #send_mail(subject,message,from_email, to_list,fail_silently = False)  
+        # email confirmation
+        current_site = get_current_site(request)
+        email_subject = 'confirmation de l adresse sur feblox'
+        messageConfirm = render_to_string("emailcofirm.html",{
+            "name":mon_utilisateur.first_name,
+            "domain": current_site.domain,
+            "uid" : urlsafe_base64_encode(force_bytes(mon_utilisateur.pk)),
+            "tokens": generatorToken.make_token(mon_utilisateur)
+        })
+        
+        email = EmailMessage(
+            email_subject, 
+            messageConfirm,
+            EMAIL_HOST_USER,
+            [mon_utilisateur.email]
+        )
+        
+        email.fail_silently = False
+        email.send()
         return redirect ('login')    
-        # envoie email de bienvenue
+        
          
     return render(request,'register.html')
 
