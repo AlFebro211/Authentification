@@ -36,14 +36,15 @@ def registrer (request):
         mon_utilisateur = User.objects.create_user(username,email,password)
         mon_utilisateur.first_name = firstname
         mon_utilisateur.last_name = lastname 
+        mon_utilisateur.is_active = False
         mon_utilisateur.save()
         ms.success(request, "votre compte a ete cree avec succes" )
-        #subject = "bienvenu sur Febrox django system login"
-        #message = "bienvenue" + mon_utilisateur.first_name + "  " + mon_utilisateur.last_name + "\n Nous sommes heureux de vous recevoir\n\n\n merci\n\n FEBROX PRO"
-        #from_email = EMAIL_HOST_USER
-        #to_list = [mon_utilisateur.email]
-        #send_mail(subject,message,from_email, to_list,fail_silently = False)  
-        # email confirmation
+        subject = "bienvenu sur Febrox django system login"
+        message = "bienvenue" + mon_utilisateur.first_name + "  " + mon_utilisateur.last_name + "\n Nous sommes heureux de vous recevoir\n\n\n merci\n\n FEBROX PRO"
+        from_email = EMAIL_HOST_USER
+        to_list = [mon_utilisateur.email]
+        send_mail(subject,message,from_email, to_list,fail_silently = False)  
+        #email confirmation
         current_site = get_current_site(request)
         email_subject = 'confirmation de l adresse sur feblox'
         messageConfirm = render_to_string("emailcofirm.html",{
@@ -72,11 +73,14 @@ def logIn (request):
         username = request.POST ['username']
         password = request.POST ['password']
         user = authenticate(username=username, password = password)
+        my_user = User.objects.get(username = username)
         if user is not None:
             login(request,user)
             firstname = user.first_name
             ms.success (request,'felicitation!! vous avez ete connecte')
             return render(request,'index.html',{'firstname':firstname})
+        elif my_user.is_active == False:
+            ms.error(request, 'You have not confirm your account!!! vous pouvez d abord confirm votre email')
         else:
             ms.error(request,'Mauvaise authentification ')
             return redirect ('login')
@@ -86,4 +90,21 @@ def logOut(request):
     logout(request)
     ms.success(request,'vous avez ete deconnecté')
     return redirect('home')
+
+def activate(request, uidb64, token):
+    try: 
+        uid = force_text (urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk = uid)
+    except (TypeError,ValueError,OverflowError,User.DoesNotExist):
+          user = None
+          
+    if user is not None and generatorToken.check_token (user, token):
+        user.is_active = True
+        user.save()
+        ms.success (request,'votre compte a ete active felicitation@!!!!!!!\n\n\n connectez vous')
+        return redirect ('login')
+    else :
+        ms.error(request,'activation echoue!!! vous pouvez reessayer plus tard')
+        return redirect ('home')
+        
         
