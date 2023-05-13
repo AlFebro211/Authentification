@@ -38,34 +38,31 @@ def registrer (request):
         mon_utilisateur.last_name = lastname 
         mon_utilisateur.is_active = False
         mon_utilisateur.save()
+        # email de bienvenue
         ms.success(request, "votre compte a ete cree avec succes" )
         subject = "bienvenu sur Febrox django system login"
         message = "bienvenue" + mon_utilisateur.first_name + "  " + mon_utilisateur.last_name + "\n Nous sommes heureux de vous recevoir\n\n\n merci\n\n FEBROX PRO"
         from_email = EMAIL_HOST_USER
         to_list = [mon_utilisateur.email]
-        send_mail(subject,message,from_email, to_list,fail_silently = False)  
-        #email confirmation
+        send_mail(subject,message,from_email, to_list,fail_silently = True)  
+        # email confirmation
         current_site = get_current_site(request)
         email_subject = 'confirmation de l adresse sur feblox'
         messageConfirm = render_to_string("emailcofirm.html",{
             "name":mon_utilisateur.first_name,
-            "domain": current_site.domain,
+            'domain': current_site.domain,
             "uid" : urlsafe_base64_encode(force_bytes(mon_utilisateur.pk)),
             "tokens": generatorToken.make_token(mon_utilisateur)
         })
-        
         email = EmailMessage(
             email_subject, 
             messageConfirm,
             EMAIL_HOST_USER,
             [mon_utilisateur.email]
         )
-        
         email.fail_silently = False
         email.send()
         return redirect ('login')    
-        
-         
     return render(request,'register.html')
 
 def logIn (request):
@@ -94,7 +91,7 @@ def logOut(request):
 def activate(request, uidb64, token):
     try: 
         uid = force_text (urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk = uid)
+        user = User.objects.get(pk=uid)
     except (TypeError,ValueError,OverflowError,User.DoesNotExist):
           user = None
           
